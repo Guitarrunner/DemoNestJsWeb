@@ -1,14 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-
-export class Task{
-  constructor(
-    public id: number,
-    public description: string,
-    public responsible: string,
-    public date: Date,
-  ){}
-}
+import { environment } from 'src/environments/environment';
+import { Task } from './interfaces/task';
 
 @Component({
   selector: 'app-root',
@@ -16,8 +9,19 @@ export class Task{
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  task!: string;
-  response!: string;
+  title = 'demoWebpage';
+  
+  public task!: string;  
+  public response!: string;
+
+  public postDesc="";
+  public postResp="";
+  public patchID=0;
+  public patchDesc="";
+  public patchResp="";
+  public getID=0;
+  public deleteID=0;
+  
   constructor(private httpClient: HttpClient){}
   ngOnInit(): void {
     this.postTask("Hola","prueba");
@@ -25,14 +29,7 @@ export class AppComponent implements OnInit {
     this.postTask("Hola","prueba");
     this.getTasks();
   }
-  title = 'demoWebpage';
-  postDesc="";
-  postResp="";
-  patchID=0;
-  patchDesc="";
-  patchResp="";
-  getID=0;
-  deleteID=0;
+  
   getValue(val: string,id:number){
     if (id==1)this.postDesc=val
     if (id==2)this.postResp=val
@@ -44,7 +41,7 @@ export class AppComponent implements OnInit {
   }
 
   getTasks(){
-    this.httpClient.get<any>("http://localhost:3000/tasks").subscribe(
+    this.httpClient.get<Task>(environment.url).subscribe(
       response =>{
         this.task=JSON.stringify(response)
       }
@@ -52,7 +49,7 @@ export class AppComponent implements OnInit {
   }
 
 getbyIDTasks(id:number){
-    this.httpClient.get<any>("http://localhost:3000/tasks/"+id).subscribe(
+    this.httpClient.get<Task>(environment.url+id).subscribe(
       response =>{
         this.response=JSON.stringify(response)
       }
@@ -60,21 +57,21 @@ getbyIDTasks(id:number){
   }
 
   postTask(desc:string,resp:string){
-    this.httpClient.post<any>("http://localhost:3000/tasks",{description:desc,responsible:resp}).subscribe(
+    this.httpClient.post<Task>(environment.url,{description:desc,responsible:resp}).subscribe(
       response =>{
         this.response=JSON.stringify(response)
     })
   }
 
   updateTask(id:number,desc:string,resp:string){
-    this.httpClient.patch<any>("http://localhost:3000/tasks/"+id,{description:desc,responsible:resp}).subscribe(
+    this.httpClient.patch<Task>(environment.url+id,{description:desc,responsible:resp}).subscribe(
       response =>{
         this.response=JSON.stringify(response)
     })
   }
 
   deleteTask(id:number){
-    this.httpClient.delete<any>("http://localhost:3000/tasks/"+id).subscribe(
+    this.httpClient.delete<Task>(environment.url+id).subscribe(
       response =>{
         this.response=JSON.stringify(response)
     })

@@ -1,0 +1,22 @@
+<style>
+
+</style>
+
+<h1>Demo</h1>
+<div><input type="textarea" placeholder="Task Description" #box (keyup)="getValue(box.value,1)" /><input type="textarea"
+        placeholder="Task Resposible" #box2 (keyup)="getValue(box2.value,2)" /><button
+        (click)="postTask(postDesc,postResp);getTasks()">Post</button></div>
+<div><input type="textarea" placeholder="Task ID" #box3 (keyup)="getValue(box3.value,3)" /><button
+        (click)="getbyIDTasks(getID);getTasks()">GetOne</button></div>
+<div><input type="textarea" placeholder="Task ID" #box4 (keyup)="getValue(box4.value,4)" /><input type="textarea"
+        placeholder="Task Description" #box5 (keyup)="getValue(box5.value,5)" /><input type="textarea"
+        placeholder="Task Responsible" #box6 (keyup)="getValue(box6.value,6)" /><button
+        (click)="updateTask(patchID,patchDesc,patchResp);getTasks()">Patch</button></div>
+<div><input type="textarea" placeholder="Task ID" #box7 (keyup)="getValue(box7.value,7)" /><button
+        (click)="deleteTask(deleteID);getTasks()">Delete</button></div>
+<p>Tasks</p>
+        <p>{{task}}</p>
+        <br>
+        <br>
+        <p>Response from server</p>
+        <p>{{response}}</p>

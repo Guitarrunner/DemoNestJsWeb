@@ -1,7 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { Task } from './interfaces/task';
+import { TaskService } from './app.service';
 
 @Component({
   selector: 'app-root',
@@ -22,12 +20,13 @@ export class AppComponent implements OnInit {
   public getID=0;
   public deleteID=0;
   
-  constructor(private httpClient: HttpClient){}
+  constructor(public taskService : TaskService){}
+  
   ngOnInit(): void {
-    this.postTask("Hola","prueba");
-    this.postTask("Hola","prueba");
-    this.postTask("Hola","prueba");
-    this.getTasks();
+    this.taskService.postTask("Hola","prueba");
+    this.taskService.postTask("Hola","prueba");
+    this.taskService.postTask("Hola","prueba");
+    this.taskService.getTasks();
   }
   
   getValue(val: string,id:number){
@@ -41,39 +40,22 @@ export class AppComponent implements OnInit {
   }
 
   getTasks(){
-    this.httpClient.get<Task>(environment.url).subscribe(
-      response =>{
-        this.task=JSON.stringify(response)
-      }
-    )
+    this.task = this.taskService.getTasks();
   }
 
-getbyIDTasks(id:number){
-    this.httpClient.get<Task>(environment.url+id).subscribe(
-      response =>{
-        this.response=JSON.stringify(response)
-      }
-    )
-  }
+  getbyIDTasks(id:number){
+    this.response =  this.taskService.getbyIDTasks(id);
+    }
 
   postTask(desc:string,resp:string){
-    this.httpClient.post<Task>(environment.url,{description:desc,responsible:resp}).subscribe(
-      response =>{
-        this.response=JSON.stringify(response)
-    })
+    this.response =  this.taskService.postTask(desc,resp);
   }
 
   updateTask(id:number,desc:string,resp:string){
-    this.httpClient.patch<Task>(environment.url+id,{description:desc,responsible:resp}).subscribe(
-      response =>{
-        this.response=JSON.stringify(response)
-    })
+    this.response =  this.taskService.updateTask(id,desc,resp);
   }
 
   deleteTask(id:number){
-    this.httpClient.delete<Task>(environment.url+id).subscribe(
-      response =>{
-        this.response=JSON.stringify(response)
-    })
+   this.response =  this.taskService.deleteTask(id);
   }
 }

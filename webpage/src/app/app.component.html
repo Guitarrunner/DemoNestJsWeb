@@ -6,25 +6,27 @@
 <div>
         <input type="textarea" placeholder="Task Description" #postDescv (keyup)="getValue(postDescv.value,1)" />
         <input type="textarea" placeholder="Task Resposible" #postRespv (keyup)="getValue(postRespv.value,2)" />
-        <button (click)="postTask(postDesc,postResp); getTasks()">Post</button>
+        <button (click)="postTask(postDesc,postResp)">Post</button>
 </div>
 
 <div>
         <input type="textarea" placeholder="Task ID" #idGetv (keyup)="getValue(idGetv.value,3)" />
-        <button (click)="getbyIDTasks(getID); getTasks()">GetOne</button>
+        <button (click)="getbyIDTasks(getID)">GetOne</button>
 </div>
 
 <div>
         <input type="textarea" placeholder="Task ID" #patchIDv (keyup)="getValue(patchIDv.value,4)" />
         <input type="textarea" placeholder="Task Description" #patchDescv (keyup)="getValue(patchDescv.value,5)" />
         <input type="textarea" placeholder="Task Responsible" #patchRespv (keyup)="getValue(patchRespv.value,6)" />
-        <button (click)="updateTask(patchID,patchDesc,patchResp); getTasks()">Patch</button>
+        <button (click)="updateTask(patchID,patchDesc,patchResp)">Patch</button>
 </div>
 
 <div>
         <input type="textarea" placeholder="Task ID" #deleteIDv (keyup)="getValue(deleteIDv.value,7)" />
-        <button (click)="deleteTask(deleteID); getTasks()">Delete</button>
+        <button (click)="deleteTask(deleteID)">Delete</button>
 </div>
+
+<button (click)="getTasks()">Refresh</button>
 
 <p>Tasks</p>
         <p>{{task}}</p>

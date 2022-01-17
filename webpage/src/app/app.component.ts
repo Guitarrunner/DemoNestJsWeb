@@ -1,3 +1,4 @@
+import { getLocaleDirection } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from './app.service';
 
@@ -9,8 +10,8 @@ import { TaskService } from './app.service';
 export class AppComponent implements OnInit {
   title = 'demoWebpage';
   
-  public task!: string;  
-  public response!: string;
+  public task = this.taskService.task;  
+  public response= this.taskService.response;
 
   public postDesc="";
   public postResp="";
@@ -23,10 +24,6 @@ export class AppComponent implements OnInit {
   constructor(public taskService : TaskService){}
   
   ngOnInit(): void {
-    this.taskService.postTask("Hola","prueba");
-    this.taskService.postTask("Hola","prueba");
-    this.taskService.postTask("Hola","prueba");
-    this.taskService.getTasks();
   }
   
   getValue(val: string,id:number){
@@ -40,22 +37,23 @@ export class AppComponent implements OnInit {
   }
 
   getTasks(){
-    this.task = this.taskService.getTasks();
+    this.task = this.taskService.task;
+    this.response = this.taskService.response;
   }
 
   getbyIDTasks(id:number){
-    this.response =  this.taskService.getbyIDTasks(id);
+    this.taskService.getbyIDTasks(id);
     }
 
   postTask(desc:string,resp:string){
-    this.response =  this.taskService.postTask(desc,resp);
+    this.taskService.postTask(desc,resp);
   }
 
   updateTask(id:number,desc:string,resp:string){
-    this.response =  this.taskService.updateTask(id,desc,resp);
+    this.taskService.updateTask(id,desc,resp);
   }
 
   deleteTask(id:number){
-   this.response =  this.taskService.deleteTask(id);
+   this.taskService.deleteTask(id);
   }
 }

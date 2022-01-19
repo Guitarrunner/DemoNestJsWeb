@@ -13,6 +13,7 @@ export class AppComponent implements OnInit {
   readonly title = 'demoWebpage';
 
   tasks$!: Observable<Task[]>;
+  tasksTable$!: Observable<any[]>;
 
   postDesc = '';
   postResp = '';
@@ -33,8 +34,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.tasks$ = this.taskService.getTasks();
-
+    this.tasksTable$ = this.taskService.getTasks();
     this.formPost = this.formBuilder.group({
       description: [
         null,
@@ -70,7 +70,6 @@ export class AppComponent implements OnInit {
   }
 
   onSubmitPost(form: FormGroup) {
-    console.log(form);
     const {
       value: { description, responsible },
     } = form;
@@ -78,7 +77,6 @@ export class AppComponent implements OnInit {
   }
 
   onSubmitGet(form: FormGroup) {
-    console.log(form);
     const {
       value: { id },
     } = form;
@@ -86,7 +84,6 @@ export class AppComponent implements OnInit {
   }
 
   onSubmitPatch(form: FormGroup) {
-    console.log(form);
     const {
       value: { id, description, responsible },
     } = form;
@@ -94,20 +91,15 @@ export class AppComponent implements OnInit {
   }
 
   onSubmitDelete(form: FormGroup) {
-    console.log(form);
     const {
       value: { id },
     } = form;
     this.deleteTask(id);
   }
 
-  getTasks() {
-    this.tasks$ = this.taskService.getTasks();
-  }
-
   getbyIDTasks(id: number) {
     this.tasks$ = this.taskService.getbyIDTasks(id).pipe(
-      tap((response) => console.log(response)),
+      //tap((response) => console.log(response)),
       switchMap(() => this.taskService.getbyIDTasks(id))
     );
   }
@@ -120,23 +112,20 @@ export class AppComponent implements OnInit {
     }*/
 
   postTask(desc: string, resp: string) {
-    this.tasks$ = this.taskService.postTask(desc, resp).pipe(
-      tap((response) => console.log(response)),
-      switchMap(() => this.taskService.getTasks())
-    );
+    this.tasksTable$ = this.taskService
+      .postTask(desc, resp)
+      .pipe(switchMap(() => this.taskService.getTasks()));
   }
 
   updateTask(id: number, desc: string, resp: string) {
-    this.tasks$ = this.taskService.updateTask(id, desc, resp).pipe(
-      tap((response) => console.log(response)),
-      switchMap(() => this.taskService.getTasks())
-    );
+    this.tasksTable$ = this.taskService
+      .updateTask(id, desc, resp)
+      .pipe(switchMap(() => this.taskService.getTasks()));
   }
 
   deleteTask(id: number) {
-    this.tasks$ = this.taskService.deleteTask(id).pipe(
-      tap((response) => console.log(response)),
-      switchMap(() => this.taskService.getTasks())
-    );
+    this.tasksTable$ = this.taskService
+      .deleteTask(id)
+      .pipe(switchMap(() => this.taskService.getTasks()));
   }
 }

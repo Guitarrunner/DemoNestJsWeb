@@ -3,19 +3,12 @@
 </style>
 
 <h1>Demo</h1>
-<button (click)="getTasks()">Get All</button>
 <div>
         <form class="form-horizontal" [formGroup]="formPost" (ngSubmit)="onSubmitPost(formPost)">
                 <input type="textarea" placeholder="Task Description" formControlName="description" />
                 <input type="textarea" placeholder="Task Resposible" formControlName="responsible" />
                 <button type="submit" [disabled]="formPost.invalid">Post</button>
         </form>
-</div>
-
-<div>
-        <form class="form-horizontal" [formGroup]="formGet" (ngSubmit)="onSubmitGet(formGet)">
-        <input type="textarea" placeholder="Task ID" formControlName="id" />
-        <button type="submit" [disabled]="formGet.invalid">GetOne</button></form>
 </div>
 
 <div>
@@ -31,9 +24,53 @@
         <input type="textarea" placeholder="Task ID" formControlName="id" />
         <button type="submit" [disabled]="formDelete.invalid">Delete</button></form>
 </div>
+<br>
+<div class="container-analyzer">
+        <table *ngFor="let data of (tasksTable$ | async)">
+                <thead>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Responsible</th>
+                        <th>Date</th>
+                </thead>
+                <tbody *ngFor="let info of data ">
+                        <tr>
+                                <td>{{info.id }}</td>
+                                <td>{{info.description }}</td>
+                                <td>{{info.responsible }}</td>
+                                <td>{{info.date | date }}</td>
 
+                        </tr>
+                </tbody>
+        </table>
+</div>
 
-<p>Tasks</p>
+<br>
+<br>
+<h2>Get one</h2>
+<div>
+        <form class="form-horizontal" [formGroup]="formGet" (ngSubmit)="onSubmitGet(formGet)">
+                <input type="textarea" placeholder="Task ID" formControlName="id" />
+                <button type="submit" [disabled]="formGet.invalid">GetOne</button>
+        </form>
+</div>
+<div class="container-analyzer">
+        <table >
+                <thead>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Responsible</th>
+                        <th>Date</th>
+                </thead>
+                <tbody *ngFor="let info of ( tasks$ | async)">
+                        <tr>
+                                <td>{{info.id }}</td>
+                                <td>{{info.description }}</td>
+                                <td>{{info.responsible }}</td>
+                                <td>{{info.date | date }}</td>
+
+                        </tr>
+                </tbody>
+        </table>
+</div>
 <p>{{ tasks$ | async | json }}</p>
-<br>
-<br>

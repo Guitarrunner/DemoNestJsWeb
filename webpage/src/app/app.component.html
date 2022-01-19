@@ -3,34 +3,37 @@
 </style>
 
 <h1>Demo</h1>
+<button (click)="getTasks()">Get All</button>
 <div>
-        <input type="textarea" placeholder="Task Description" #postDescv (keyup)="getValue(postDescv.value,1)" />
-        <input type="textarea" placeholder="Task Resposible" #postRespv (keyup)="getValue(postRespv.value,2)" />
-        <button (click)="postTask(postDesc,postResp)">Post</button>
+        <form class="form-horizontal" [formGroup]="formPost" (ngSubmit)="onSubmitPost(formPost)">
+                <input type="textarea" placeholder="Task Description" formControlName="description" />
+                <input type="textarea" placeholder="Task Resposible" formControlName="responsible" />
+                <button type="submit" [disabled]="formPost.invalid">Post</button>
+        </form>
 </div>
 
 <div>
-        <input type="textarea" placeholder="Task ID" #idGetv (keyup)="getValue(idGetv.value,3)" />
-        <button (click)="getbyIDTasks(getID)">GetOne</button>
+        <form class="form-horizontal" [formGroup]="formGet" (ngSubmit)="onSubmitGet(formGet)">
+        <input type="textarea" placeholder="Task ID" formControlName="id" />
+        <button type="submit" [disabled]="formGet.invalid">GetOne</button></form>
 </div>
 
 <div>
-        <input type="textarea" placeholder="Task ID" #patchIDv (keyup)="getValue(patchIDv.value,4)" />
-        <input type="textarea" placeholder="Task Description" #patchDescv (keyup)="getValue(patchDescv.value,5)" />
-        <input type="textarea" placeholder="Task Responsible" #patchRespv (keyup)="getValue(patchRespv.value,6)" />
-        <button (click)="updateTask(patchID,patchDesc,patchResp)">Patch</button>
+        <form class="form-horizontal" [formGroup]="formPatch" (ngSubmit)="onSubmitPatch(formPatch)">
+        <input type="textarea" placeholder="Task ID" formControlName="id" />
+        <input type="textarea" placeholder="Task Description" formControlName="description" />
+        <input type="textarea" placeholder="Task Responsible" formControlName="responsible" />
+        <button type="submit" [disabled]="formPatch.invalid">Patch</button></form>
 </div>
 
 <div>
-        <input type="textarea" placeholder="Task ID" #deleteIDv (keyup)="getValue(deleteIDv.value,7)" />
-        <button (click)="deleteTask(deleteID)">Delete</button>
+        <form class="form-horizontal" [formGroup]="formDelete" (ngSubmit)="onSubmitDelete(formDelete)">
+        <input type="textarea" placeholder="Task ID" formControlName="id" />
+        <button type="submit" [disabled]="formDelete.invalid">Delete</button></form>
 </div>
 
-<button (click)="getTasks()">Refresh</button>
 
 <p>Tasks</p>
-        <p>{{task}}</p>
-        <br>
-        <br>
-        <p>Response from server</p>
-        <p>{{response}}</p>
+<p>{{ tasks$ | async | json }}</p>
+<br>
+<br>

@@ -1,59 +1,142 @@
-import { getLocaleDirection } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable, switchMap, tap } from 'rxjs';
 import { TaskService } from './app.service';
+import { Task } from './interfaces/task';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  title = 'demoWebpage';
-  
-  public task = this.taskService.task;  
-  public response= this.taskService.response;
+  readonly title = 'demoWebpage';
 
-  public postDesc="";
-  public postResp="";
-  public patchID=0;
-  public patchDesc="";
-  public patchResp="";
-  public getID=0;
-  public deleteID=0;
-  
-  constructor(public taskService : TaskService){}
-  
+  tasks$!: Observable<Task[]>;
+
+  postDesc = '';
+  postResp = '';
+  patchID = 0;
+  patchDesc = '';
+  patchResp = '';
+  getID = 0;
+  deleteID = 0;
+
+  formPost!: FormGroup;
+  formGet!: FormGroup;
+  formPatch!: FormGroup;
+  formDelete!: FormGroup;
+
+  constructor(
+    public taskService: TaskService,
+    private formBuilder: FormBuilder
+  ) {}
+
   ngOnInit(): void {
-  }
-  
-  getValue(val: string,id:number){
-    if (id==1)this.postDesc=val
-    if (id==2)this.postResp=val
-    if (id==3)this.getID=Number(val)
-    if (id==4)this.patchID=Number(val)
-    if (id==5)this.patchDesc=val
-    if (id==6)this.patchResp=val
-    if (id==7)this.deleteID=Number(val)
+    this.tasks$ = this.taskService.getTasks();
+
+    this.formPost = this.formBuilder.group({
+      description: [
+        null,
+        [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(200),
+        ],
+      ],
+      responsible: [null, Validators.required],
+    });
+
+    this.formGet = this.formBuilder.group({
+      id: [null, [Validators.required]],
+    });
+
+    this.formPatch = this.formBuilder.group({
+      id: [null, [Validators.required]],
+      description: [
+        null,
+        [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(200),
+        ],
+      ],
+      responsible: [null, Validators.required],
+    });
+
+    this.formDelete = this.formBuilder.group({
+      id: [null, [Validators.required]],
+    });
   }
 
-  getTasks(){
-    this.task = this.taskService.task;
-    this.response = this.taskService.response;
+  onSubmitPost(form: FormGroup) {
+    console.log(form);
+    const {
+      value: { description, responsible },
+    } = form;
+    this.postTask(description, responsible);
   }
 
-  getbyIDTasks(id:number){
-    this.taskService.getbyIDTasks(id);
-    }
-
-  postTask(desc:string,resp:string){
-    this.taskService.postTask(desc,resp);
+  onSubmitGet(form: FormGroup) {
+    console.log(form);
+    const {
+      value: { id },
+    } = form;
+    this.getbyIDTasks(id);
   }
 
-  updateTask(id:number,desc:string,resp:string){
-    this.taskService.updateTask(id,desc,resp);
+  onSubmitPatch(form: FormGroup) {
+    console.log(form);
+    const {
+      value: { id, description, responsible },
+    } = form;
+    this.updateTask(id, description, responsible);
   }
 
-  deleteTask(id:number){
-   this.taskService.deleteTask(id);
+  onSubmitDelete(form: FormGroup) {
+    console.log(form);
+    const {
+      value: { id },
+    } = form;
+    this.deleteTask(id);
+  }
+
+  getTasks() {
+    this.tasks$ = this.taskService.getTasks();
+  }
+
+  getbyIDTasks(id: number) {
+    this.tasks$ = this.taskService.getbyIDTasks(id).pipe(
+      tap((response) => console.log(response)),
+      switchMap(() => this.taskService.getbyIDTasks(id))
+    );
+  }
+
+  /* let tmp = Number(id);
+    if (!Number.isNaN(tmp)) {
+      this.taskService.getbyIDTasks(tmp);
+    } else {
+      alert('Use números en el id!');
+    }*/
+
+  postTask(desc: string, resp: string) {
+    this.tasks$ = this.taskService.postTask(desc, resp).pipe(
+      tap((response) => console.log(response)),
+      switchMap(() => this.taskService.getTasks())
+    );
+  }
+
+  updateTask(id: number, desc: string, resp: string) {
+    this.tasks$ = this.taskService.updateTask(id, desc, resp).pipe(
+      tap((response) => console.log(response)),
+      switchMap(() => this.taskService.getTasks())
+    );
+  }
+
+  deleteTask(id: number) {
+    this.tasks$ = this.taskService.deleteTask(id).pipe(
+      tap((response) => console.log(response)),
+      switchMap(() => this.taskService.getTasks())
+    );
   }
 }

@@ -1,53 +1,38 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { first } from 'rxjs';
+import { environment } from '../environments/environment';
 import { Task } from './interfaces/task';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class TaskService {
-  public task!: string;  
-  public response!: string;
-constructor(private httpClient: HttpClient){}
-  getTasks(){
-    this.httpClient.get<Task>(environment.url).subscribe(
-      response =>{
-        this.task=JSON.stringify(response)
-      }
-    );
+  constructor(private httpClient: HttpClient) {}
+  getTasks() {
+    return this.httpClient.get<Task[]>(environment.url).pipe(first());
   }
 
-getbyIDTasks(id:number){
-    this.httpClient.get<Task>(environment.url+id).subscribe(
-      response =>{
-        this.response=JSON.stringify(response)
-        this.getTasks()
-      }
-    );
+  getbyIDTasks(id: number) {
+    return this.httpClient.get<Task[]>(environment.url + id).pipe(first());
   }
 
-  postTask(desc:string,resp:string){
-    this.httpClient.post<Task>(environment.url,{description:desc,responsible:resp}).subscribe(
-      response =>{
-        this.response=JSON.stringify(response)
-        this.getTasks()
-    });
+  postTask(desc: string, resp: string) {
+    return this.httpClient
+      .post<Task[]>(environment.url, { description: desc, responsible: resp })
+      .pipe(first());
   }
 
-  updateTask(id:number,desc:string,resp:string){
-    this.httpClient.patch<Task>(environment.url+id,{description:desc,responsible:resp}).subscribe(
-      response =>{
-        this.response=JSON.stringify(response)
-        this.getTasks()
-    });
+  updateTask(id: number, desc: string, resp: string) {
+    return this.httpClient
+      .patch<Task[]>(environment.url + id, {
+        description: desc,
+        responsible: resp,
+      })
+      .pipe(first());
   }
 
-  deleteTask(id:number){
-    this.httpClient.delete<Task>(environment.url+id).subscribe(
-      response =>{
-        this.response=JSON.stringify(response)
-        this.getTasks()
-    });
-  }}
+  deleteTask(id: number) {
+    return this.httpClient.delete<Task[]>(environment.url + id).pipe(first());
+  }
+}
